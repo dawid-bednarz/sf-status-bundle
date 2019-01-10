@@ -1,0 +1,8 @@
+services:
+    _defaults:
+        autowire: true
+        autoconfigure: true
+        public: false
+    DawBed\StatusBundle\:
+        resource: '%bundle_dir%/*'
+        exclude: '%bundle_dir%/{DependencyInjection,Entity,Migrations,Tests}'
