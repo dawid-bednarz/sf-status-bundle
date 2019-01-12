@@ -7,7 +7,7 @@
     "symfony/framework-bundle": "^4.1",
     "dawid-bednarz/sf-component-bundle": "dev-master",
     "dawid-bednarz/sf-context-bundle": "dev-master",
-    "dawid-bednarz/php-status": "@dev"
+    "dawid-bednarz/php-status": "dev-master"
   },
   "autoload": {
     "psr-4": {
