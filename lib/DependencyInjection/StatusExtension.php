@@ -7,8 +7,9 @@ declare(strict_types=1);
 
 namespace DawBed\StatusBundle\DependencyInjection;
 
+use DawBed\PHPClassProvider\ClassProvider;
+use DawBed\StatusBundle\Entity\AbstractStatus;
 use DawBed\StatusBundle\Repository\StatusRepository;
-use DawBed\StatusBundle\Service\EntityService;
 use DawBed\PHPUser\Context;
 use DawBed\StatusBundle\PersistListener;
 use DawBed\StatusBundle\Service\SupportService;
@@ -45,8 +46,8 @@ class StatusExtension extends Extension implements PrependExtensionInterface
         $configs = $this->processConfiguration($configuration, $configs);
         $this->prepareLoader($container);
         $this->prepareSupportService($statuses, $container);
-        $this->prepareEntityService($configs['entities'], $container);
-        $this->prepareStatusRepository($configs['entities']['status'], $container);
+        $this->prepareEntityProvider($configs['entities'], $container);
+        $this->prepareStatusRepository($configs['entities'][AbstractStatus::class], $container);
     }
 
     private function prepareLoader(ContainerBuilder $containerBuilder): YamlFileLoader
@@ -69,13 +70,11 @@ class StatusExtension extends Extension implements PrependExtensionInterface
         ]));
     }
 
-    private function prepareEntityService(array $entities, ContainerBuilder $container): void
+    private function prepareEntityProvider(array $entities, ContainerBuilder $container): void
     {
-        $container->setDefinition(EntityService::class, new Definition(EntityService::class, [
-            [
-                'Status' => $entities['status'],
-            ]
-        ]));
+        foreach ($entities as $name => $class) {
+            ClassProvider::add($name,$class);
+        }
     }
 
     private function getStatuses(array $configs): array

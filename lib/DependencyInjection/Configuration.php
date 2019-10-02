@@ -8,7 +8,7 @@ declare(strict_types=1);
 namespace DawBed\StatusBundle\DependencyInjection;
 
 use DawBed\ComponentBundle\Configuration\Entity;
-use DawBed\PHPStatus\Status;
+use DawBed\StatusBundle\Entity\AbstractStatus;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
 use Symfony\Component\Config\Definition\ConfigurationInterface;
@@ -25,7 +25,7 @@ class Configuration implements ConfigurationInterface
         $this->statuses($rootNode);
 
         $entity = new Entity($rootNode);
-        $entity->new('status', Status::class);
+        $entity->new(AbstractStatus::class, AbstractStatus::class);
         $entity->end();
 
         return $treeBuilder;
