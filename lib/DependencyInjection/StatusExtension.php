@@ -9,12 +9,13 @@ namespace DawBed\StatusBundle\DependencyInjection;
 
 use DawBed\PHPClassProvider\ClassProvider;
 use DawBed\StatusBundle\Entity\AbstractStatus;
+use DawBed\StatusBundle\Provider;
 use DawBed\StatusBundle\Repository\StatusRepository;
 use DawBed\PHPUser\Context;
 use DawBed\StatusBundle\PersistListener;
-use DawBed\StatusBundle\Service\SupportService;
 use DawBed\UserBundle\Service\StatusService;
 use Doctrine\Common\Persistence\ManagerRegistry;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
@@ -45,7 +46,7 @@ class StatusExtension extends Extension implements PrependExtensionInterface
         $statuses = $this->getStatuses($configs);
         $configs = $this->processConfiguration($configuration, $configs);
         $this->prepareLoader($container);
-        $this->prepareSupportService($statuses, $container);
+        $this->prepareProvider($statuses, $container);
         $this->prepareEntityProvider($configs['entities'], $container);
         $this->prepareStatusRepository($configs['entities'][AbstractStatus::class], $container);
     }
@@ -63,35 +64,35 @@ class StatusExtension extends Extension implements PrependExtensionInterface
         ]));
     }
 
-    private function prepareSupportService(array $statuses, ContainerBuilder $container): void
+    private function prepareProvider(array $statuses, ContainerBuilder $container): void
     {
-        $container->setDefinition(SupportService::class, new Definition(SupportService::class, [
-            $statuses
+        $container->setDefinition(Provider::class, new Definition(Provider::class, [
+            $statuses,
+            new Reference(EntityManagerInterface::class)
         ]));
     }
 
     private function prepareEntityProvider(array $entities, ContainerBuilder $container): void
     {
         foreach ($entities as $name => $class) {
-            ClassProvider::add($name,$class);
+            ClassProvider::add($name, $class);
         }
     }
-
+    
     private function getStatuses(array $configs): array
     {
-        $statuses = [];
+        $types = [];
 
         foreach ($configs as $config) {
             if (array_key_exists(Configuration::NODE_STATUSES, $config)) {
-                foreach ($config[Configuration::NODE_STATUSES] as $value) {
-                    if (in_array($value, $statuses)) {
-                        throw new \Exception(sprintf('Duplicate Status "%s"', $value));
+                foreach ($config[Configuration::NODE_STATUSES] as $type => $data) {
+                    if (array_key_exists($type, $types)) {
+                        throw new \Exception(sprintf('Duplicate Type "%s"', $value));
                     }
-                    $statuses[] = $value;
+                    $types[$type] = $data;
                 }
             }
         }
-        return $statuses;
+        return $types;
     }
-
 }

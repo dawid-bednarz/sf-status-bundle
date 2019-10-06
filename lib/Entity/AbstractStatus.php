@@ -7,9 +7,8 @@ declare(strict_types=1);
 
 namespace DawBed\StatusBundle\Entity;
 
-use DawBed\PHPContext\Context;
+use DawBed\ContextBundle\Entity\Context;
 
-class AbstractStatus extends Context
+abstract class AbstractStatus extends Context
 {
-
 }

@@ -8,6 +8,7 @@ declare(strict_types=1);
 namespace DawBed\StatusBundle\DependencyInjection;
 
 use DawBed\ComponentBundle\Configuration\Entity;
+use DawBed\StatusBundle\AbstractFactory;
 use DawBed\StatusBundle\Entity\AbstractStatus;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -15,7 +16,7 @@ use Symfony\Component\Config\Definition\ConfigurationInterface;
 
 class Configuration implements ConfigurationInterface
 {
-    public const NODE_STATUSES = 'types';
+    public const NODE_STATUSES = 'statuses';
 
     public function getConfigTreeBuilder()
     {
@@ -36,11 +37,13 @@ class Configuration implements ConfigurationInterface
         $status
             ->children()
             ->arrayNode(self::NODE_STATUSES)
+            ->arrayPrototype()
+            ->children()
+            ->scalarNode('name')
+            ->end()
+            ->arrayNode('groups')
             ->scalarPrototype()
-            ->validate()
-            ->ifTrue(function ($v) {
-                return !is_int($v);
-            })->thenInvalid('Status must be an integer type');
+            ->end()
+            ->end();
     }
-
 }

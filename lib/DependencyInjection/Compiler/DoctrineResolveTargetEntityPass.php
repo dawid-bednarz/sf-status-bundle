@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace DawBed\StatusBundle\DependencyInjection\Compiler;
 
 use DawBed\PHPClassProvider\ClassProvider;
-use DawBed\PHPStatus\StatusInterface;
 use DawBed\StatusBundle\Entity\AbstractStatus;
 use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
