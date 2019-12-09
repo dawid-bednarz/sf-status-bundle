@@ -8,7 +8,6 @@ declare(strict_types=1);
 namespace DawBed\StatusBundle\DependencyInjection;
 
 use DawBed\ComponentBundle\Configuration\Entity;
-use DawBed\StatusBundle\AbstractFactory;
 use DawBed\StatusBundle\Entity\AbstractStatus;
 use Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition;
 use Symfony\Component\Config\Definition\Builder\TreeBuilder;
@@ -40,6 +39,8 @@ class Configuration implements ConfigurationInterface
             ->arrayPrototype()
             ->children()
             ->scalarNode('name')
+            ->end()
+            ->scalarNode('description')
             ->end()
             ->arrayNode('groups')
             ->scalarPrototype()
